@@ -1,0 +1,123 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+// datasource db {
+//   provider = "sqlserver"
+//   url      = env("DATABASE_URL")
+// }
+
+model User {
+    id        String    @id @default(cuid())
+    userId    String    @unique
+    email     String    @unique
+    // accessToken String    @db.LongText
+    // accessToken String 
+    expiresIn DateTime?
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    roleName  String    @default("ADMIN")
+}
+
+model Buffet {
+    id          String          @id @default(cuid())
+    name        String
+    description String
+    imageUrl    String?
+    price       Decimal
+    isArchived  Boolean         @default(false)
+    createdAt   DateTime        @default(now())
+    updatedAt   DateTime        @updatedAt
+    foods       Food[]
+    sessions    BuffetSession[]
+    discounts   BuffetDiscount?
+}
+
+model Food {
+    id          String   @id @default(cuid())
+    name        String
+    description String?
+    price       Decimal?
+    isFeatured  Boolean  @default(false)
+    buffets     Buffet[]
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}
+
+model BuffetSession {
+    id        String   @id @default(cuid())
+    buffet    Buffet   @relation(fields: [buffetId], references: [id], onDelete: Cascade)
+    buffetId  String
+    startTime DateTime
+    endTime   DateTime
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model BuffetDiscount {
+    id        String   @id @default(cuid())
+    buffet    Buffet   @relation(fields: [buffetId], references: [id])
+    buffetId  String   @unique
+    amount    Decimal
+    startDate DateTime
+    endDate   DateTime
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Enquiry {
+    id        String   @id @default(cuid())
+    name      String
+    email     String
+    message   String
+    status    String   @default("PENDING")
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Testimonial {
+    id        String   @id @default(cuid())
+    name      String
+    content   String
+    rating    Int
+    imageUrl  String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Blog {
+    id        String   @id @default(cuid())
+    title     String
+    content   String
+    author    String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Payment {
+    id        String   @id @default(cuid())
+    amount    Decimal
+    Status    String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Notification {
+    id        String   @id @default(cuid())
+    message   String
+    isRead    Boolean  @default(false)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Subscription {
+    id        String   @id @default(cuid())
+    email     String   @unique
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

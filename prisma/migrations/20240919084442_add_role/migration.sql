@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `user` ADD COLUMN `roleName` VARCHAR(191) NOT NULL DEFAULT 'ADMIN';
